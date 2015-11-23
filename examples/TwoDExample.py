@@ -11,13 +11,12 @@ from hPart import *
 from hProperty import *
 from hStep import *
 
-#### execfile('hPart.py')
-
 materials = getMaterialList() # Load in material Data
 matrix = "ESBR" # Choose the first experiment from TCNanoFillers
 fillers = ["Alumina", "ZincOxide"] # Two fillers associated with first experiment
 
-modelObject, modelName = createModel(2) # Create model database "Model-1"
+modelObject, modelName = createModel(2) # Create model database "Model-2"
+fileName = modelName
 side, radius, portions, dP, dM, cP, cM = defExperiment(modelObject, matrix, fillers[0]) # Define material attributes for specified matrix, fillers
 
 seed = numpy.random.randint(1000) # Random seed for coordinate generation
@@ -31,8 +30,8 @@ createSection(modelObject, part, fillers[0], fillerSet) # Create section for fil
 assemblyTop, assemblyBottom = makeAssembly2D(modelObject, part) # Create assembly and return references to assembly sets
 temp1, temp2 = 328.15, 298.15 # Assign heat temperature to be used in experiment
 heatStep2D(modelObject, assemblyBottom, assemblyTop, temp1, temp2) # apply heat BC
-#elements, nodes = makeMesh2D() # Draw mesh and return number of nodes and elements
+elements, nodes = makeMesh2D(modelObject, part, allSet) # Draw mesh and return number of nodes and elements
+warningString = submitJob(modelName,fileName) # Submit job and take note of any warnings
+avgHF, TC = getThermalProperties2D(side, temp1, temp2, fileName) # Extract relevant information about thermal properties
 
-######
-#warningString = submitJob() # Submit job and take note of any warnings
-#avgHF, TC = getThermalProperties2D() # Extract relevant information about thermal properties
+print("Thermal Conductivity is " + str(TC))

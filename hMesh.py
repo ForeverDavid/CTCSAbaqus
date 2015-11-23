@@ -19,12 +19,12 @@ from abaqus import mdb
 import abaqusConstants as aq
 import mesh
 
-def makeMesh2D(globalSeed=20):
+def makeMesh2D(modelObject, part, allSet, globalSeed=15):
 	import mesh
 	part.setMeshControls(elemShape=aq.TRI, regions=(allSet.faces)) # Set to triangle shape
 	part.setElementType(elemTypes=(mesh.ElemType(elemCode=aq.DC2D8, elemLibrary=aq.STANDARD), 
 		mesh.ElemType(elemCode=aq.DC2D6, elemLibrary=aq.STANDARD)), regions=(allSet)) #
-	nodes, elements = 0, 0 # Do I need this line?
+	nodes, elements = 0, 0
 	while True:
 		part.seedPart(deviationFactor=0.1, minSizeFactor=0.1, size=globalSeed)
 		part.generateMesh()
