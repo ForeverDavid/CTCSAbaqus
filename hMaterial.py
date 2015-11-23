@@ -58,7 +58,7 @@ def getMaterialList():
 	materials = { 
 		'ESBR' : { 'densityM' : 9.3e-016, 'conducM' : 200000.0, 'fillers' : { #TCNanoFillers
 			'Alumina' : { 'densityF' : 3.950e-015, 'conducF' : 15000000.0, 'side' : 520, 'radius' : 37.5,
-				'phr' : [10, 20, 40, 80, 100], 'meshSeed' : 10, 'df' : 0.0375, 'delta' : 0.15, 'minInt' : 0.15}, 
+				'phr' : [10, 20, 40, 80, 100], 'meshSeed' : 8, 'df' : 0.03, 'delta' : 0.15, 'minInt' : 0.15}, 
 			'ZincOxide' : { 'densityF' : 5.610e-015, 'conducF' : 25000000.0, 'side' : 176, 'radius' : 22.5,
 				'phr' : [5, 10, 20, 40, 80, 100], 'meshSeed' : 3.2, 'df' : 0.0125, 'delta' : 0.17, 'minInt' : 0.17}}}, 
 		'EpoxyResin' : { 'densityM' : 1.3e-015, 'conducM' : 170000, 'fillers' : { #TCPolymericCompositesReview
