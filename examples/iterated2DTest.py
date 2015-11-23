@@ -20,7 +20,7 @@ from hPart import *
 from hProperty import *
 from hStep import *
 
-trialsPer = 3 # Number of times to run each experiment
+trialsPer = 1 # Number of times to run each experiment
 
 materials = getMaterialList() # Load in material Data
 matrix = "ESBR" # Choose the first experiment from TCNanoFillers
@@ -32,7 +32,7 @@ f.write('Matrix\tFiller\tPortion\tRadius\tNumber\tSide\tSeed\tNodes\tq\tdT\tk\tW
 
 for i in range(len(materials[matrix]['fillers'])): # "For each filler material"
 	modelObject, modelName = createModel(1) # Create model database "Model-1"
-	side, radius, portions, dP, dM = defExperiment(modelObject, matrix, fillers[i]) # Define material attributes for specified matrix, fillers
+	side, radius, portions, dP, dM, cP, cM = defExperiment(modelObject, matrix, fillers[i]) # Define material attributes for specified matrix, fillers
 	
 	for j in range(len(portions)): # "For each PHR/volume portion specified"
 		for k in range(trialsPer): # "Run trialsPer times for each material/filler/PHR combination"

@@ -10,6 +10,8 @@ from hModel import *
 from hPart import *
 from hProperty import *
 from hStep import *
+
+
 trialsPer = 10 # Number of times to run each experiment
 interfaceSize = 0.0
 defDelta = 0.15

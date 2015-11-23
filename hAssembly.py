@@ -43,7 +43,7 @@ import abaqusConstants as aq
 
 def makeAssembly2D(modelObject, part):
 	modelObject.rootAssembly.DatumCsysByDefault(aq.CARTESIAN)
-	modelObject.rootAssembly.Instance(dependent=ON, name='PART1', part=part)
+	modelObject.rootAssembly.Instance(dependent=aq.ON, name='PART1', part=part)
 	# Create a reference to the assembly sets
 	assemblyTop = modelObject.rootAssembly.instances['PART1'].sets['Top']
 	assemblyBottom = modelObject.rootAssembly.instances['PART1'].sets['Bottom']
