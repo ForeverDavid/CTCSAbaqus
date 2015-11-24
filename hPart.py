@@ -156,8 +156,8 @@ def assignGeomSequence(part):
 # This method creates the partitions and circular inclusions which finishes our
 # simple 2D Model. It also makes the sets associated to the matrix, the 
 # inclusions, and then the entire model.  
-def createCircleInclusion(modelObject, part, radius, number, xVals, yVals):
-	#edges1, vertices1, face1 = assignGeomSequence(part) NEEDED???
+def createCircleInclusion(modelObject, part, radius, number, xVals, yVals, side):
+	edges1, vertices1, face1 = assignGeomSequence(part)
 	t = part.MakeSketchTransform(sketchPlane=face1[0], sketchPlaneSide=aq.SIDE1,
 		origin=(0,0,0))
 	sketch = modelObject.ConstrainedSketch(name='__profile__', sheetSize=500, 
@@ -173,11 +173,11 @@ def createCircleInclusion(modelObject, part, radius, number, xVals, yVals):
 	part.PartitionFaceBySketch(faces=pickedFaces, sketch=sketch)
 	sketch.unsetPrimaryObject()
 	del modelObject.sketches['__profile__']
-	return create2DSets(part, edges1, face1) # Return references to the sets. 
+	return create2DSets(part, edges1, face1, side, number, xVals, yVals) # Return references to the sets. 
 
 # Create sets and regions for top and bottom values and for the filler and matrix
 # These are referenced in various stages like assembly or mesh. 
-def create2DSets(part, edges1, face1):
+def create2DSets(part, edges1, face1, side, number, xVals, yVals):
 	part.Set(name='Top', edges=edges1.findAt(((side/2.0,side,0),))) 
 	part.Set(name='Bottom', edges=edges1.findAt(((side/2.0,0,0),)))
 	# Select the bottom corner, selecting the entire matrix
