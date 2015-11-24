@@ -86,12 +86,9 @@ def submitJob(modelName, fileName="Job-1"):
 
 
 # Get data 
-def getThermalProperties2D():
+def getThermalProperties2D(side, temp1, temp2, fileName='Job-1'):
 	
-	odb = session.openOdb('Job-1'+'.odb')
-	#odb = session.openOdb(name='Job-'+str(modelCount)+'.odb')
-	#odb = session.openOdb(name='Job-1.odb')
-	#odb = session.openOdb(name=fileName)
+	odb = session.openOdb(fileName+'.odb')
 	lastFrame = odb.steps['applyHeat'].frames[-1]
 	hfl = lastFrame.fieldOutputs['HFL']
 	bottoms = odb.rootAssembly.instances['PART1'].elementSets['BOTTOM']
@@ -117,11 +114,10 @@ def getThermalProperties2D():
 	del odb
 	return int(round(avgHeatFlux, -1)), round(thermalCond, 4)
 
-#matrixUsed, materialUsed, fillerPortion, radius, number, side, 
-#randomSeed, nodes, elements, df, meshSeed, avgHF, temp1, temp2, TC,
-#warningString, warningPoints, noElementsWarning
-# Fix this.. make it a list comprehension or something
-
+def dataString2D(matrix, filler, portion, radius, number, side, seed, nodes, elements,
+	avgHF, temp1, temp2, TC, warningString, warningPoints):
+	
+	return matrix+'\t'+filler+'\t'+str(portion)+'\t'+str(radius)+'\t'+str(number)+'\t'+str(side)+'\t'+str(seed)+'\t'+str(nodes)+'\t'+str(elements)+'\t'+str(avgHF)+'\t'+str(temp1-temp2)+'\t'+str(TC)+'\t'+warningString+warningPoints+'\n'
 
 def dataString(matrixUsed, materialUsed, fillerPortion, radius, number, side, 
 	interfaceSize, deltaMinDist, calcPortion, interfaceConduct, randomSeed, nodes, elements, df,
@@ -132,7 +128,7 @@ def dataString(matrixUsed, materialUsed, fillerPortion, radius, number, side,
 	return matrixUsed+'\t'+materialUsed+'\t'+str(fillerPortion)+'\t'+str(radius)+'\t'+str(number)+'\t'+str(side)+'\t'+str(interfaceSize)+'\t'+str(deltaMinDist)+'\t'+str(calcPortion)+'\t'+str(interfaceConduct)+'\t'+str(randomSeed)+'\t'+str(nodes)+'\t'+str(elements)+'\t'+str(df)+'\t'+ str(meshSeed)+'\t'+str(avgHF)+'\t'+str(temp1-temp2)+'\t'+str(TC)+'\t'+str(noElementsWarning)+'\t'+warningString+warningPoints+'\n'
 
 # Not general enough for different jobs
-def getThermalProperties3D(particleRadius, matrixSide, temp1, temp2, fileName="Job-1"):
+def getThermalProperties3D(matrixSide, temp1, temp2, fileName="Job-1"):
 	import odbAccess
 	odb = session.openOdb(name=fileName+'.odb')
 	lastFrame = odb.steps['Step-1'].frames[-1]
@@ -153,10 +149,7 @@ def getThermalProperties3D(particleRadius, matrixSide, temp1, temp2, fileName="J
 		sumsVals = sumsVals + val2.magnitude
 		count = count + 1.0 
 	
-	radius = particleRadius
-	side = matrixSide
-	radius = radius * 10 ** -6
-	side = side * 10 ** -6
+	side = matrixSide * 10 ** -6
 	avgHeatFlux = sumsVals / count
 	thermalCond = avgHeatFlux * side / (temp1-temp2)
 	return int(round(avgHeatFlux, -1)), round(thermalCond, 4)
