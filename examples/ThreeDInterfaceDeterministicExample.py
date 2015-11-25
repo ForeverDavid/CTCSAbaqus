@@ -13,8 +13,7 @@ from hStep import *
 
 ## NOTE THAT we may be able to leave out tons of these procedures. All I need is to 
 # have the basic model set up and only change either Interface conductivity or 
-# interface portion size. All else will stay constant. Object Orientation could
-# come in nicely.
+# interface portion size. All else will stay constant. 
 
 # Get material list
 materials = getMaterialList() # Load in material Data
@@ -37,9 +36,10 @@ phr = portions[4]
 
 # get coordinates, interface Max, random interface size, etc.
 radius, number = invPHRAlternate3D(phr, dP, radius, dM, side)
-delta = 0.15
+delta = materials[matrix]['fillers']["Alumina"]['delta']
+minInt = materials[matrix]['fillers']["Alumina"]['minInt']
 intPortionLimit = getInterfacePortionLimit(side, radius, number)
-#interfacePortion = numpy.random.sample(1) * (intPortionLimit-0.15) + 0.15 # random 0.1 to limit inclusive
+#interfacePortion = numpy.random.sample(1) * (intPortionLimit-minInt) + minInt # random 0.1 to limit inclusive
 #interfacePortion = round(interfacePortion[0], 3)
 interfacePortion = intPortionLimit / 2.0
 xVals, yVals, zVals = getPoints3dDeterministic(side, radius, number)
@@ -75,6 +75,8 @@ assemblyTop, assemblyBottom, assemblyAll = define3DAssemblySets(modelRootAssembl
 temp1, temp2 = 328.15, 298.15 # Assign heat temperature to be used in experiment
 heatStep3D(modelObject, assemblyBottom, assemblyTop, temp1, temp2) # apply heat BC
 limitOutputHFL(modelObject, assemblyBottom, assemblyTop) # Limit ODB Output
+meshSeed = materials[matrix]['fillers']["Alumina"]['meshSeed'] # recommended mesh
+df = materials[matrix]['fillers']["Alumina"]['df'] # recommended deviation factor
 elements, nodes, df, meshSeed = makeMesh3D(modelObject, modelRootAssembly)  # Draw mesh and return number of nodes and elements
 makeElementSet(fullMatrixPart, modelRootAssembly)
 print(str(seed) + " " +str(number) + " " + str(radius) + " " + str(df) + " " + str(meshSeed) + " " + str(elements) + " " +str(nodes) + " " + warningPoints)

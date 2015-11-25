@@ -25,17 +25,16 @@ modelObject, modelName = createModel(2)
 # define materials
 side, radius, portions, dP, dM, cP, cM = defExperiment(modelObject, matrix, filler)
 
-# which phr
+# which volume
 vol = portions[0]
-#densityMatrix = materials[matrix]['densityM']
-#densityFiller = materials[matrix]['fillers']['Alumina']['densityF']
-#sideMatrix = materials[matrix]['fillers']['Alumina']['side']
 
 # get coordinates, interface Max, random interface size, etc.
 radius, number = invVolumeAlternate3D(vol, radius, side)
-delta = 0.15
+delta = materials[matrix]['fillers'][filler]['delta']
 intPortionLimit = getInterfacePortionLimit(side, radius, number)
-#interfacePortion = numpy.random.sample(1) * (intPortionLimit-0.15) + 0.15 # random 0.1 to limit inclusive
+minInt = materials[matrix]['fillers'][filler]['minInt']
+
+#interfacePortion = numpy.random.sample(1) * (intPortionLimit-minInt) + minInt # random 0.1 to limit inclusive
 #interfacePortion = round(interfacePortion[0], 3)
 interfacePortion = intPortionLimit / 2.0
 xVals, yVals, zVals = getPoints3dDeterministic(side, radius, number)
@@ -49,7 +48,7 @@ interfaceConductivity = (cP + cM) / 2.0
 # Define interface materials
 defineMaterial(modelObject, "Interface", dM, interfaceConductivity) # Define interface conductivity... Note that this will be generated randomly
 
-# Check PHR values
+# Check volume values to ensure correct
 calcVol = calculateVolume(number, radius, side)
 
 part = createMatrix(modelObject, side, False) # Create the matrix
@@ -71,7 +70,11 @@ assemblyTop, assemblyBottom, assemblyAll = define3DAssemblySets(modelRootAssembl
 temp1, temp2 = 328.15, 298.15 # Assign heat temperature to be used in experiment
 heatStep3D(modelObject, assemblyBottom, assemblyTop, temp1, temp2) # apply heat BC
 limitOutputHFL(modelObject, assemblyBottom, assemblyTop) # Limit ODB Output
-elements, nodes, df, meshSeed = makeMesh3D(modelObject, modelRootAssembly, 10, 0.05)  # Draw mesh and return number of nodes and elements
+
+meshSeed = materials[matrix]['fillers'][filler]['meshSeed'] # recommended mesh
+df = materials[matrix]['fillers'][filler]['df'] # recommended deviation factor
+
+elements, nodes, df, meshSeed = makeMesh3D(modelObject, modelRootAssembly, meshSeed, df)  # Draw mesh and return number of nodes and elements
 makeElementSet(fullMatrixPart, modelRootAssembly)
 print(str(seed) + " " +str(number) + " " + str(radius) + " " + str(df) + " " + str(meshSeed) + " " + str(elements) + " " +str(nodes) + " " + warningPoints)
 fileName = "job1341"
@@ -80,6 +83,6 @@ generateINP(fileName)
 
 #odbfileName = modelName
 #warningString, noElementsWarning = submitJob(modelName, odbfileName)  # Submit job and take note of any warnings
-#avgHF, TC = getThermalProperties3D(radius, side, temp1, temp2, odbfileName) # Extract relevant information about thermal properties
+#avgHF, TC = getThermalProperties3D(side, temp1, temp2, odbfileName) # Extract relevant information about thermal properties
 
 #print(dataString(matrix, fillers[1], portions[3], radius, number, side, interfacePortion, delta, calcPHR, interfaceConductivity, seed, nodes, elements, df, meshSeed, avgHF, temp1, temp2, TC, warningString, warningPoints, noElementsWarning)) # Write the data to file

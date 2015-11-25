@@ -32,7 +32,6 @@ f.write('Matrix\tFiller\tPortion\tRadius\tNumber\tSide\tSeed\tNodes\tq\tdT\tk\tW
 
 for i in range(len(materials[matrix]['fillers'])): # "For each filler material"
 	modelObject, modelName = createModel(2) # Create model database "Model-1"
-	fileName = modelName
 	side, radius, portions, dP, dM, cP, cM = defExperiment(modelObject, matrix, fillers[i]) # Define material attributes for specified matrix, fillers
 	
 	for j in range(len(portions)): # "For each PHR/volume portion specified"
