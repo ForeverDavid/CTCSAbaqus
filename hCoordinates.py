@@ -25,8 +25,8 @@ def invPHR(phr, densityFiller, radiusFiller, densityMatrix, sideMatrix, twoD=Tru
 		defaultN = 75
 		endRange = calculatePHR3D(defaultN, densityFiller, radiusFiller+
 			10*radiusStep, densityMatrix, sideMatrix)
-		while phr > endRange:
-			defaultN = defaultN * 0.1 + defaultN
+		while phr < endRange:
+			defaultN = int(defaultN * 0.1 + defaultN)
 			endRange = calculatePHR3D(defaultN, densityFiller, radiusFiller+
 				10*radiusStep, densityMatrix, sideMatrix)
 		
@@ -224,6 +224,7 @@ def getPoints3dDeterministic(side, radius, number):
 ## TODO:
 # LIMIT THE STEP INITIALLY AND GROW ONLY IF NEEDED
 # Need to ensure inputs don't exceed 1 because this gives greater than 1 volumePortions
+## This is the deterministic point generation method
 def invVolumeAlternate3D(volPortion, radiusFiller, sideMatrix):
 	import numpy
 	radiusStep = 0.025*radiusFiller # Alter radius to accommodate varying volPortion 
