@@ -13,10 +13,10 @@ from hStep import *
 
 ## NOTE: That the following way of changing interfacePortions and conductivities
 ## isn't as robust as generating random values based on materialList maximum portions
-## and defined conductivities. See inpExample for best practice.
+## and defined conductivities. See inpExample for best practices.
 
 ### Increase distance delta in coordinate generation by interface length! 
-interfacePortions = [0.15, 0.2, 0.25, 0.3, 0.35, 0.4]
+interfacePortions = [0.15, 0.2, 0.25] # 0.4 could be too large depending on phr/volume material combination
 interfaceConductivities = [500000, 2000000, 3500000, 5500000, 7500000, 9500000, 11000000]
 
 trialsPer = 1 # Number of times to run each experiment
@@ -36,7 +36,6 @@ for i in range(len(materials[matrix]['fillers'])): # "For each filler material"
 			for k in range(trialsPer): # "Run trialsPer times for each material/filler/PHR combination"
 				for n in range(len(interfaceConductivities)):
 					modelObject, modelName = createModel(2) # Create model database "Model-2"
-					fileName = modelName
 					side, radius, portions, dP, dM, cP, cM = defExperiment(modelObject, matrix, fillers[i]) # Define material attributes for specified matrix, fillers
 					defineMaterial(modelObject, "Interface", dM, interfaceConductivities[n]) # Define interface conductivity... Note that this will be generated randomly
 					

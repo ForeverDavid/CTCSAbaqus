@@ -13,9 +13,7 @@ from hStep import *
 
 import os
 
-## RUN TO DO TC FIRST THEN GO BACK THROUGH FOR RADIUS SINCE THIS WILL BE MUCH MUCH QUICKER
-
-inpRoot = "E:\\inpFiles"
+inpRoot = "E:\\inpFiles" # Location of INP files
 workingDir = 'W:\\Research\\CTCSAbaqus'
 os.makedirs(inpRoot)
 
@@ -154,7 +152,11 @@ for key1, val in materials.iteritems():
 					temp1, temp2 = 328.15, 298.15 # Assign heat temperature to be used in experiment
 					heatStep3D(modelObject, assemblyBottom, assemblyTop, temp1, temp2) # apply heat BC
 					limitOutputHFL(modelObject, assemblyBottom, assemblyTop) # Limit ODB Output
-					elements, nodes, df, meshSeed = makeMesh3D(modelObject, modelRootAssembly)  # Draw mesh and return number of nodes and elements
+					
+					meshSeed = materials[matrix]['fillers'][key2]['meshSeed'] # recommended mesh
+					df = materials[matrix]['fillers'][key2]['df'] # recommended deviation factor
+					
+					elements, nodes, df, meshSeed = makeMesh3D(modelObject, modelRootAssembly, meshSeed, df)  # Draw mesh and return number of nodes and elements
 					makeElementSet(fullMatrixPart, modelRootAssembly)
 
 					## define range for interface conductivity # Either constant or varying depending on other constants
