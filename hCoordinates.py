@@ -288,15 +288,23 @@ def invAreaCircle(radiusFiller, sideMatrix, areaRatio):
 	numberFillers = round((areaRatio * sideMatrix ** 2) / (pi * radiusFiller ** 2))
 	return numberFillers
 
+def calcNumberFibers(radiusFiber, fiberLength, sideMatrix, volumePortion):
+	import numpy
+	numFibers = round((volumePortion * sideMatrix ** 3) / (fiberLength * radiusFiber ** 2 * pi))
+	return int(numFibers)
 
-"""
-# Add methods for Carbon Nanotubes 2D & 3D
-def invAreaRectangle(lengthFiller, heightFiller, sideMatrix, areaRatio) # 2D Carbon nanotube as a rectangle
+def calcFiberPortion(n, radiusFiber, fiberLength, sideMatrix):
+	import numpy
+	return ((n * pi * radiusFiber ** 2 * fiberLength) / (sideMatrix**3))
+
+# Add methods for fibers
+def invAreaRectangle(lengthFiller, heightFiller, sideMatrix, areaRatio):
 	import numpy
 	numberFillers = round((areaRatio * sideMatrix ** 2) / (lengthFiller * heightFiller))
 	return numberFillers
 
-def getPointsRectangle(seed, side, length, width, number, orientation=45, randomO=False):
+# Random orientation
+def getPointsRectangle2D(seed, side, length, width, number):
 	import random
 	import numpy
 	random.seed(seed)
@@ -331,6 +339,9 @@ def getPointsRectangle(seed, side, length, width, number, orientation=45, random
 	
 	return xCoords, yCoords, warningMsg
 
+
+
+"""
 
 # Add a method that gives warning for possible combinations that aren't feasible.
 

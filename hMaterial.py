@@ -85,10 +85,18 @@ def getMaterialList():
 	
 	return materials
 
-
+# Filled in until real data obtained
+def getMatListCNT():
+	materials = {
+		'ESBR' : { 'densityM' : 9.3e-016, 'conducM' : 200000.0, 'fillers' : { #TCNanoFillers
+			'CNT' : { 'densityF' : 1.30e-015, 'conducF' : 20000000.0, 'side' : 220, 'radius' : 3, 'length' : 20, # 520, 0.012 and 1.5
+			'vol' : [0.05, 0.10, 0.20, 0.25, 0.3], 'meshSeed' : 7, 'df' : 0.025, 'delta' : 0.15, 'minInt' : 0.15}}}}
+	
+	return materials
 
 # Helper method for assigning material attributes to model db material along with returning values for required side ,radius, and portions
 # defThermalExp
+# Only for use with particle fillers
 def defExperiment(modelObject, matrixMaterial, fillerMaterial):
 	mList = getMaterialList()
 	dM, cM = mList[matrixMaterial]['densityM'], mList[matrixMaterial]['conducM']
@@ -104,6 +112,23 @@ def defExperiment(modelObject, matrixMaterial, fillerMaterial):
 		portions = fillerReference['volPortion']
 	
 	return side, radius, portions, dP, dM, cP, cM
+
+def defExperimentFiber(modelObject, matrixMaterial, fillerMaterial):
+	mList = getMatListCNT()
+	dM, cM = mList[matrixMaterial]['densityM'], mList[matrixMaterial]['conducM']
+	fillerReference = mList[matrixMaterial]['fillers'][fillerMaterial]
+	dP, cP = fillerReference['densityF'], fillerReference['conducF']
+	defineMaterial(modelObject, matrixMaterial, dM, cM)
+	defineMaterial(modelObject, fillerMaterial, dP, cP)
+	side = fillerReference['side']
+	radius = fillerReference['radius']
+	length = fillerReference['length']
+	if fillerReference.has_key('phr'):
+		portions = fillerReference['phr']
+	else:
+		portions = fillerReference['vol']
+	
+	return side, radius, length, portions, dP, dM, cP, cM
 
 
 def makeFileStructure():

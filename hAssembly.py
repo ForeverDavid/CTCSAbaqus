@@ -40,6 +40,8 @@
 
 from abaqus import mdb
 import abaqusConstants as aq
+import math
+import numpy
 
 def makeAssembly2D(modelObject, part):
 	modelObject.rootAssembly.DatumCsysByDefault(aq.CARTESIAN)
@@ -48,6 +50,48 @@ def makeAssembly2D(modelObject, part):
 	assemblyTop = modelObject.rootAssembly.instances['PART1'].sets['Top']
 	assemblyBottom = modelObject.rootAssembly.instances['PART1'].sets['Bottom']
 	return assemblyTop, assemblyBottom
+
+def create3DMatrixFiberInclusions(modelObject, matPart, fibPart, cylinderCoords):
+	modelRootAssembly = modelObject.rootAssembly
+	modelRootAssembly.Instance(dependent=aq.ON, name='SolidMatrix-1', part=matPart)
+	number = len(cylinderCoords) 
+
+	for zz in range(number): # Create each fiber
+		modelRootAssembly.Instance(dependent=aq.OFF, name='Fiber-'+str(zz+1),
+		part=fibPart)
+	
+	for aa in range(number): # Translate and rotate each fiber
+		a = cylinderCoords[aa][0][0]
+		b = cylinderCoords[aa][0][1]
+		degreeAB = math.degrees(math.acos(numpy.dot(a,b)/(numpy.dot(a,a)*numpy.dot(b,b))))
+		## Does the axis direction change depending on what degreeAB is?
+		modelRootAssembly.translate(instanceList=('Fiber-'+str(aa+1), ), 
+			vector=(a[0], a[1], a[2]))
+		modelRootAssembly.rotate(angle=degreeAB, axisDirection=(b[0]-a[0], b[1]-a[1], b[2]-a[2]), 
+			axisPoint=(a[0], a[1], a[2]), instanceList=('Fiber-'+str(aa+1), ))
+	
+	# make tuple of fiber instances
+	tupleInstances = tuple([(modelRootAssembly.instances['Fiber-'+str(nn+1)])
+		for nn in range(number)]) 
+	
+	
+	modelRootAssembly.InstanceFromBooleanCut(cuttingInstances=(tupleInstances), 
+		instanceToBeCut=modelRootAssembly.instances['SolidMatrix-1'], 
+		name='matrixEmpty', originalInstances=aq.SUPPRESS)
+	
+	for xx in range(number): # Resume fibers
+		modelRootAssembly.features['Fiber-'+str(xx+1)].resume()
+	
+	#del modelRootAssembly.features['solidmatrix-1']
+	allInstances = tupleInstances + (modelRootAssembly.instances['matrixEmpty-1'],)
+	
+	modelRootAssembly.InstanceFromBooleanMerge(domain=aq.GEOMETRY, 
+		instances=(allInstances), keepIntersections=aq.ON, 
+		name='matrixFull', originalInstances=aq.SUPPRESS)
+	
+	modelRootAssembly.makeIndependent(instances=(modelRootAssembly.instances['matrixFull-1'], ))
+	fullMatrixPart = modelObject.parts['matrixFull']
+	return modelRootAssembly, fullMatrixPart
 
 def create3DMatrixInclusions(modelObject, matPart, parPart, number, xVals,
 	yVals, zVals, intPart=None):

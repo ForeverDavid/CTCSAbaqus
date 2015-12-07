@@ -141,6 +141,15 @@ def createSphereParticle(modelObject, particleRadius, matrixSide, name1="Particl
 	part = modelObject.parts[name1]
 	return part
 
+def createFiber(modelObject, fiberRadius, fiberLength, name1='Fiber'):
+	sketch = modelObject.ConstrainedSketch(name='__profile__', sheetSize=200.0)
+	sketch.CircleByCenterPerimeter(center=(0.0, 0.0), point1=(0.0, fiberRadius))
+	modelObject.Part(dimensionality=aq.THREE_D, name=name1, type=aq.DEFORMABLE_BODY)
+	modelObject.parts[name1].BaseSolidExtrude(depth=fiberLength, sketch=sketch)
+	del sketch
+	part = modelObject.parts[name1]
+	return part
+
 # This method creates references to the GeomSequence objects derived from the 
 # argument "part". In the 2D Model we only have one part so this method is used
 # once, but 3D Model needs multiple GeomSequences.
@@ -197,6 +206,7 @@ def create2DSets(part, edges1, face1, side, number, xVals, yVals):
 	allSet = part.sets['All']
 	return matrixSet, fillerSet, allSet
 
+## THIS DOESN'T TRANSLATE WELL TO FIBERS!!!
 def create3DInitialSets(matrixPart, particlePart, matrixSide, interfacePart=None):
 	matrixPart.Set(cells=matrixPart.cells.findAt(((matrixSide,matrixSide,matrixSide),)), 
 		name='allMatrix')
@@ -211,4 +221,28 @@ def create3DInitialSets(matrixPart, particlePart, matrixSide, interfacePart=None
 		return matrixSet, particleSet, interfaceSet
 	else:
 		return matrixSet, particleSet
-	
+
+def create3DInitialSetsFibers(matrixPart, fiberPart, matrixSide):
+	matrixPart.Set(cells=matrixPart.cells.findAt(((matrixSide,matrixSide,matrixSide),)), 
+		name='allMatrix')
+	fiberPart.Set(cells=fiberPart.cells.findAt(fiberPart.cells[0].pointOn), 
+		name='fiberAll')
+	matrixSet = matrixPart.sets['allMatrix']
+	fiberSet = fiberPart.sets['fiberAll']
+	return matrixSet, fiberSet
+
+'''
+## Go from here ## MAY NOT NEED
+def create3DInitialSetsFibers(matrixPart, fiberPart, matrixSide):
+	matrixPart.Set(cells=matrixPart.cells.findAt(((matrixSide,matrixSide,matrixSide),)), 
+		name='allMatrix')
+	fiberPart.Set(faces=fiberPart.faces.pointsOn, name='fiberAll')
+	matrixSet = matrixPart.sets['allMatrix']
+	fiberSet = fiberPart.sets['fiberAll']
+	return matrixSet, fiberSet
+
+#mdb.models['Model-2'].parts['Fiber'].Set(faces=
+#    mdb.models['Model-2'].parts['Fiber'].faces.findAt(((-2.998898, 0.081312, 
+#    6.666667), ), ((0.0, 2.891634, 20.0), ), ((0.0, 2.891634, 0.0), ), ), name=
+#    'Set-2')
+'''
