@@ -340,6 +340,58 @@ def getPointsRectangle2D(seed, side, length, width, number):
 	return xCoords, yCoords, warningMsg
 
 
+# c is center point of cylnder
+# unit length axis direction w which is computed randomly
+# radius r
+# height h
+# end disks are centered c +- h/2 W ...
+# u, v
+# parametrized = X(theta, t) = C + s cos theta U + s sin theta V + tW , 0 <= theta < 2pi , 0 <= s <= r , |t| < h/2
+class Cylinder:
+	def __init__(self, c0, w0, r0, h0):
+		self.c = c0
+		self.w = w0
+		self.r = r0
+		self.h = h0
+	
+	@staticmethod 
+	def SeperatedCylinders(cylinder1, cylinder2):
+		delta = Vector(cylinder2.c - )
+	
+
+class RandomCylinder(Cylinder):
+	def __init__(self, r0, h0, side):
+		Cylinder.__init__(self, getC(r0, h0, side), getW(), r0, h0)
+	
+	def getC(r0, h0, side):
+		import numpy
+		x0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+		y0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+		z0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+		return Point(x0, y0, z0)
+	
+	def getW():
+		import numpy
+		z = numpy.random.uniform(-1, 1, 1)[0]
+		theta = numpy.random.uniform(0, 2*pi, 1)[0]
+		return Vector(sqrt(1-z*z)*cos(theta), sqrt(1-z*z)*sin(theta), z)
+	
+	
+
+
+class Vector:
+	def __init__(self, x0, y0, z0):
+		self.x = x0
+		self.y = y0
+		self.z = z0
+
+class Point:
+	def __init__(self, x0, y0, z0):
+		self.x = x0
+		self.y = y0
+		self.z = z0
+	
+
 
 """
 

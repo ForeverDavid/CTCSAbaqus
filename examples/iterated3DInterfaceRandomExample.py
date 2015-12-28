@@ -14,8 +14,9 @@ from hStep import *
 trialsPer = 1 # Number of times to run each experiment
 materials = getMaterialList() # Load in material Data
 matrix = "ESBR" # Choose the first experiment from TCNanoFillers
-fillers = ["ZincOxide", "Alumina"] # Two fillers associated with first experiment
-totalIterations = 0
+#fillers = ["ZincOxide", "Alumina"] # Two fillers associated with first experiment
+fillers = ["ZincOxide"]
+totalIterations = 2
 
 
 for i in range(len(materials[matrix]['fillers'])): # "For each filler material"
@@ -25,7 +26,7 @@ for i in range(len(materials[matrix]['fillers'])): # "For each filler material"
 			totalIterations = totalIterations + 1
 			print("number " + str(totalIterations) + " of " + str(combinations))
 			
-			modelObject, modelName = createModel(2) # Create model database "Model-2"
+			modelObject, modelName = createModel(totalIterations) # Create model database "Model-2"
 			side, radius, portions, dP, dM, cP, cM = defExperiment(modelObject, matrix, fillers[i]) # Define material attributes for specified matrix, fillers
 			
 			seed = numpy.random.randint(1000000) # Random seed for coordinate generation
@@ -69,8 +70,8 @@ for i in range(len(materials[matrix]['fillers'])): # "For each filler material"
 			
 			elements, nodes, df, meshSeed = makeMesh3D(modelObject, modelRootAssembly, meshSeed, df)  # Draw mesh and return number of nodes and elements
 			makeElementSet(fullMatrixPart, modelRootAssembly)
-			print(str(calcPHR) + " " str(portions[j]))
-			print(str(seed) + " " +str(number) + " " + str(radius) + " " + str(df) + " " + str(meshSeed) + " " + str(elements) + " " +str(nodes) + " " + warningPoints)
+			#print(str(calcPHR) + " " str(portions[j]))
+			#print(str(seed) + " " +str(number) + " " + str(radius) + " " + str(df) + " " + str(meshSeed) + " " + str(elements) + " " +str(nodes) + " " + warningPoints)
 			odbfileName = modelName
 			warningString, noElementsWarning = submitJob(modelName, odbfileName)  # Submit job and take note of any warnings
 			avgHF, TC = getThermalProperties3D(side, temp1, temp2, odbfileName) # Extract relevant information about thermal properties
