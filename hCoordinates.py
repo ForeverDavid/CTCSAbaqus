@@ -340,6 +340,38 @@ def getPointsRectangle2D(seed, side, length, width, number):
 	return xCoords, yCoords, warningMsg
 
 
+
+def get3DCylinders(seed, side, radius, height, number):
+	import random
+	import numpy
+	random.seed(seed)
+	
+	cylCoords = [Cylinder(getC(radius, height, side), getW(), radius, height)]
+	numberCoords = 1
+	
+	for i in range(1, 100000):
+		nextCylinder = Cylinder(getC(radius, height, side), getW(), radius, height)
+		flag = True
+		for j in range(0, len(cylCoords)):
+			if not SeperatedCylinders(cylCoords[j], nextCylinder):
+				flag = False
+				break
+		
+		if flag:
+			cylCoords.append(nextCylinder)
+			numberCoords += 1
+		if numberCoords == number:
+			break
+	
+	
+	warningMsg = ''
+	if numberCoords != number:
+		warningMsg = '?'
+		number = numberCoords # Needed for updated return value.
+	
+	return cylCoords, warningMsg, int(round(number))
+
+
 # c is center point of cylnder
 # unit length axis direction w which is computed randomly
 # radius r
@@ -354,12 +386,41 @@ class Cylinder:
 		self.r = radius
 		self.h = height
 	
+	def getEnds(self):
+		return [self.c + self.w*(self.h/2.0), self.c - self.w*(self.h/2.0)]
+
+def getW():
+	import numpy
+	z = numpy.random.uniform(-1, 1, 1)[0]
+	theta = numpy.random.uniform(0, 2*pi, 1)[0]
+	return numpy.array([sqrt(1-z*z)*cos(theta), sqrt(1-z*z)*sin(theta), z])
+
+def cylindricaldegree(cylinders):
+	for i in range(0, len(cylinders)):
+		a = cylinders[i].getEnds()[0]
+		b = cylinders[i].getEnds()[1]
+		degreeAB = math.degrees(math.acos(numpy.dot(a,b)/(numpy.linalg.norm(a)*numpy.linalg.norm(b))))
+		print(degreeAB)
+
+def cylindricaldegreeother(cylinders):
+	for i in range(0, len(cylinders)):
+		a = numpy.array(cylinders[i][0][0])
+		b = numpy.array(cylinders[i][0][1])
+		degreeAB = math.degrees(math.acos(numpy.dot(a,b)/(numpy.linalg.norm(a)*numpy.linalg.norm(b))))
+		print(degreeAB)
+
+def getC(r0, h0, side):
+	import numpy
+	x0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+	y0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+	z0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+	return numpy.array([x0, y0, z0])
 
 def SeperatedCylinders(cylinder1, cylinder2):
 	import numpy
-	w1 = cylinder.w
-	w2 = cylinder.w
-	delta = numpy.substract(cylinder2.c, cylinder1.c)
+	w1 = cylinder1.w
+	w2 = cylinder2.w
+	delta = numpy.subtract(cylinder2.c, cylinder1.c)
 	w1Xw2 = numpy.cross(w1, w2)
 	lenw1Xw2 = numpy.linalg.norm(w1Xw2)
 	rSum = cylinder1.r + cylinder2.r
@@ -370,27 +431,28 @@ def SeperatedCylinders(cylinder1, cylinder2):
 	
 	
 	if lenw1Xw2 > 0:
-		if r2*lenw1Xw2 + h1Div2 + h2Div2 * numpy.linalg.norm(numpy.dot(w1, w2)) - numpy.linalg.norm(numpy.dot(w1, delta))) < 0:
-			return true
-		if r1*lenw1Xw2 + h1Div2 * numpy.linalg.norm(numpy.dot(w1, w2)) + h2Div2  - numpy.linalg.norm(numpy.dot(w2, delta))) < 0:
-			return true
-		if rSum*lenw1Xw2 - numpy.linalg.norm(numpy.dot(w1Xw2, delta))) < 0:
-			return true
+		if r2*lenw1Xw2 + h1Div2 + h2Div2 * numpy.linalg.norm(numpy.dot(w1, w2)) - numpy.linalg.norm(numpy.dot(w1, delta)) < 0:
+			return True
+		if r1*lenw1Xw2 + h1Div2 * numpy.linalg.norm(numpy.dot(w1, w2)) + h2Div2  - numpy.linalg.norm(numpy.dot(w2, delta)) < 0:
+			return True
+		if rSum*lenw1Xw2 - numpy.linalg.norm(numpy.dot(w1Xw2, delta)) < 0:
+			return True
 		if SeperatedByCylinderPerpendiculars(cylinder1, cylinder2):
-			return true
+			return True
 		if SeperatedByCylinderPerpendiculars(cylinder2, cylinder1):
-			return true
-		if SeperatedByOtherDirections(cylinder1, cylinder2, delta):
-			return true
-	else
-		if h1Div2 + h2Div2 - numpy.linalg.norm(w1, delta)) < 0:
-			return true
+			return True
+		#if SeperatedByOtherDirections(cylinder1, cylinder2, delta):
+		#	return True
+	else:
+		if h1Div2 + h2Div2 - numpy.linalg.norm(w1, delta) < 0:
+			return True
 		if rSum - numpy.linalg.norm(delta - numpy.dot(w1, delta)*w1) < 0:
-			return true
+			return True
 	
-	return false
+	return False
 
 def F(t, r0, r1, h1, b1, c1, a2, b2):
+	import numpy
 	omt = 1 - t
 	tsqr = t * t
 	c1sqr = c1 * c1
@@ -403,6 +465,7 @@ def F(t, r0, r1, h1, b1, c1, a2, b2):
 	return term0 + term1 + term2 - term3
 
 def FDer(t, r0, r1, h1, b1, c1, a2, b2):
+	import numpy
 	omt = 1 - t
 	tsqr = t * t
 	c1sqr = c1 * c1
@@ -415,9 +478,10 @@ def FDer(t, r0, r1, h1, b1, c1, a2, b2):
 	return term0 + term1 + term2 - term3
 
 def SeperatedByCylinderPerpendiculars(cylinder1, cylinder2):
-	w1 = cylinder.w
-	w2 = cylinder.w
-	delta = numpy.substract(cylinder2.c, cylinder1.c)
+	import numpy
+	w1 = cylinder1.w
+	w2 = cylinder2.w
+	delta = numpy.subtract(cylinder2.c, cylinder1.c)
 	c1 = numpy.dot(w1, w2)
 	b1 = sqrt(1-c1*c1)
 	v0 = (w2 - c1*w1)/b1
@@ -430,13 +494,13 @@ def SeperatedByCylinderPerpendiculars(cylinder1, cylinder2):
 	h2 = cylinder2.h
 	
 	if F(0, r1, r2, h2, b1, c1, a2, b2) <= 0:
-		return true
+		return True
 	if F(1, r1, r2, h2, b1, c1, a2, b2) <= 0:
-		return true
+		return True
 	if FDer(0, r1, r2, h2, b1, c1, a2, b2) >= 0:
-		return false
+		return False
 	if FDer(1, r1, r2, h2, b1, c1, a2, b2) <= 0:
-		return false
+		return False
 	
 	t0 = 0
 	t1 = 1
@@ -445,40 +509,40 @@ def SeperatedByCylinderPerpendiculars(cylinder1, cylinder2):
 	for i in range (0, maxIterations):
 		tmid = 0.5 * (t0 + t1)
 		if F(tmid, r1, r2, h2, b1, c1, a2, b2) <= 0:
-			return true
+			return True
 		fdmid = FDer(tmid, r1, r2, h2, b1, c1, a2, b2)
 		if (fdmid > 0):
 			t1 = tmid
 		elif fdmid < 0:
 			t0 = tmid
-		else
+		else:
 			break
 	
 	a2 = -1 * a2
 	if F(0, r1, r2, h2, b1, c1, a2, b2) <= 0:
-		return true
+		return True
 	if F(1, r1, r2, h2, b1, c1, a2, b2) <= 0:
-		return true
+		return True
 	if FDer(0, r1, r2, h2, b1, c1, a2, b2) >= 0:
-		return false
+		return False
 	if FDer(1, r1, r2, h2, b1, c1, a2, b2) <= 0:
-		return false
+		return False
 	
 	t0 = 0
 	t1 = 1
 	for i in range (0, maxIterations):
 		tmid = 0.5 * (t0 + t1)
 		if F(tmid, r1, r2, h2, b1, c1, a2, b2) <= 0:
-			return true
+			return True
 		fdmid = FDer(tmid, r1, r2, h2, b1, c1, a2, b2)
 		if (fdmid > 0):
 			t1 = tmid
 		elif fdmid < 0:
 			t0 = tmid
-		else
+		else:
 			break
 	
-	return false
+	return False
 
 def G(s, t, r0, h0, r1, h1, a0, b0, c0, a1, b1, c1, delta):
 	import numpy
@@ -539,16 +603,17 @@ def GDer(s, t, r0, h0, r1, h1, a0, b0, c0, a1, b1, c1, delta):
 	
 	return gradient
 
-def SeparatedByOtherDirections(cylinder1, cylinder2, delta):
-	if G(...) <= 0:
-		return true
+#def SeparatedByOtherDirections(cylinder1, cylinder2, delta):
+	#if G(...) <= 0:
+	#	return True
 	
-	return false
+	#return False
+
 
 
 class RandomCylinder(Cylinder):
 	def __init__(self, r0, h0, side):
-		Cylinder.__init__(self, getC(r0, h0, side), getW(), r0, h0)
+		Cylinder.__init__(self, RandomCylinder.getC(r0, h0, side), RandomCylinder.getW(), r0, h0)
 	
 	def getC(r0, h0, side):
 		import numpy

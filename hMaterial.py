@@ -89,7 +89,7 @@ def getMaterialList():
 def getMatListCNT():
 	materials = {
 		'ESBR' : { 'densityM' : 9.3e-016, 'conducM' : 200000.0, 'fillers' : { #TCNanoFillers
-			'CNT' : { 'densityF' : 1.30e-015, 'conducF' : 20000000.0, 'side' : 220, 'radius' : 3, 'length' : 20, # 520, 0.012 and 1.5
+			'CNT' : { 'densityF' : 1.30e-015, 'conducF' : 20000000.0, 'side' : 110, 'radius' : 5, 'length' : 30, # 520, 0.012 and 1.5
 			'vol' : [0.05, 0.10, 0.20, 0.25, 0.3], 'meshSeed' : 7, 'df' : 0.025, 'delta' : 0.15, 'minInt' : 0.15}}}}
 	
 	return materials

@@ -61,9 +61,9 @@ def create3DMatrixFiberInclusions(modelObject, matPart, fibPart, cylinderCoords)
 		part=fibPart)
 	
 	for aa in range(number): # Translate and rotate each fiber
-		a = cylinderCoords[aa][0][0]
-		b = cylinderCoords[aa][0][1]
-		degreeAB = math.degrees(math.acos(numpy.dot(a,b)/(numpy.dot(a,a)*numpy.dot(b,b))))
+		a = cylinderCoords[aa].getEnds()[0]
+		b = cylinderCoords[aa].getEnds()[1]
+		degreeAB = math.degrees(math.acos(numpy.dot(a,b)/(numpy.linalg.norm(a)*numpy.linalg.norm(b))))
 		## Does the axis direction change depending on what degreeAB is?
 		modelRootAssembly.translate(instanceList=('Fiber-'+str(aa+1), ), 
 			vector=(a[0], a[1], a[2]))
