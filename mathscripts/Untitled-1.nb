@@ -1,0 +1,504 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 9.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[     15321,        494]
+NotebookOptionsPosition[     13767,        434]
+NotebookOutlinePosition[     14112,        449]
+CellTagsIndexPosition[     14069,        446]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Graphics3D", "[", 
+   RowBox[{"Cylinder", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "49.5575177816779", ",", "55.4809355400133", ",", 
+         "28.6043341677057"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{
+        "49.4421733803632", ",", "25.5362471818757", ",", 
+         "30.4215668999395"}], "}"}]}], "}"}], ",", " ", "5"}], "]"}], "]"}], 
+  "\[IndentingNewLine]"}]], "Input",
+ CellChangeTimes->{{3.660564529509884*^9, 3.6605645995278835`*^9}}],
+
+Cell[BoxData[
+ Graphics3DBox[
+  CylinderBox[{{49.5575177816779, 55.4809355400133, 28.6043341677057}, {
+   49.4421733803632, 25.5362471818757, 30.4215668999395}}, 5],
+  AutomaticImageSize->True,
+  ImageSize->{488.0306428639724, 306.1803787569968},
+  ViewPoint->{1.0290805129436675`, -1.6843894812030018`, 2.748422342634458},
+  ViewVertical->{-1.5396612209189684`, -0.10566400310284998`, 
+   2.2108092057719224`}]], "Output",
+ CellChangeTimes->{{3.6605645732098837`*^9, 3.6605646255808835`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Show", "[", 
+  RowBox[{
+   RowBox[{"Graphics3D", "[", 
+    RowBox[{"Cylinder", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+         "49.5575177816779`", ",", "55.4809355400133`", ",", 
+          "28.6043341677057`"}], "}"}], ",", 
+        RowBox[{"{", 
+         RowBox[{
+         "49.4421733803632`", ",", "25.5362471818757`", ",", 
+          "30.4215668999395`"}], "}"}]}], "}"}], ",", "5"}], "]"}], "]"}], 
+   ",", 
+   RowBox[{"Axes", "\[Rule]", "True"}]}], "]"}]], "Input",
+ NumberMarks->False],
+
+Cell[BoxData[
+ Graphics3DBox[
+  CylinderBox[{{49.5575177816779, 55.4809355400133, 28.6043341677057}, {
+   49.4421733803632, 25.5362471818757, 30.4215668999395}}, 5],
+  Axes->True]], "Output",
+ CellChangeTimes->{3.6605646286738834`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Show", "[", 
+  RowBox[{
+   RowBox[{"Graphics3D", "[", 
+    RowBox[{
+     RowBox[{"Cylinder", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+          "49.5575177816779`", ",", "55.4809355400133`", ",", 
+           "28.6043341677057`"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{
+          "49.4421733803632`", ",", "25.5362471818757`", ",", 
+           "30.4215668999395`"}], "}"}]}], "}"}], ",", "5"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"Axes", "\[Rule]", "True"}], "}"}]}], "]"}], ",", 
+   RowBox[{"Background", "\[Rule]", "LightGray"}]}], "]"}]], "Input",
+ NumberMarks->False],
+
+Cell[BoxData[
+ Graphics3DBox[
+  CylinderBox[{{49.5575177816779, 55.4809355400133, 28.6043341677057}, {
+   49.4421733803632, 25.5362471818757, 30.4215668999395}}, 5],
+  Axes->True,
+  Background->GrayLevel[0.85]]], "Output",
+ CellChangeTimes->{3.660564641957884*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Show", "[", 
+  RowBox[{
+   RowBox[{"Graphics3D", "[", 
+    RowBox[{
+     RowBox[{"Cylinder", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+          "49.5575177816779`", ",", "55.4809355400133`", ",", 
+           "28.6043341677057`"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{
+          "49.4421733803632`", ",", "25.5362471818757`", ",", 
+           "30.4215668999395`"}], "}"}]}], "}"}], ",", "5"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"Background", "\[Rule]", 
+        RowBox[{"GrayLevel", "[", "0.85`", "]"}]}], ",", 
+       RowBox[{"Axes", "\[Rule]", "True"}]}], "}"}]}], "]"}], ",", 
+   RowBox[{"Boxed", "\[Rule]", "False"}]}], "]"}]], "Input",
+ NumberMarks->False],
+
+Cell[BoxData[
+ Graphics3DBox[
+  CylinderBox[{{49.5575177816779, 55.4809355400133, 28.6043341677057}, {
+   49.4421733803632, 25.5362471818757, 30.4215668999395}}, 5],
+  Axes->True,
+  Background->GrayLevel[0.85],
+  Boxed->False]], "Output",
+ CellChangeTimes->{3.660564644410884*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Show", "[", 
+  RowBox[{
+   RowBox[{"Graphics3D", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"Cylinder", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+           "49.5575177816779`", ",", "55.4809355400133`", ",", 
+            "28.6043341677057`"}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{
+           "49.4421733803632`", ",", "25.5362471818757`", ",", 
+            "30.4215668999395`"}], "}"}]}], "}"}], ",", "5"}], "]"}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"Boxed", "\[Rule]", "False"}], ",", 
+        RowBox[{"Background", "\[Rule]", 
+         RowBox[{"GrayLevel", "[", "0.85`", "]"}]}], ",", 
+        RowBox[{"Axes", "\[Rule]", "True"}]}], "}"}], ",", " ", 
+      RowBox[{"Cylinder", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+           "95.4859158114101", ",", "39.011394300099", ",", 
+            "51.344054811125"}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{
+           "74.0042474144188", ",", "29.8580595064991", ",", 
+            "32.5091302018258"}], "}"}]}], "}"}], ",", "5"}], "]"}]}], "}"}], 
+    "]"}], ",", 
+   RowBox[{"Boxed", "\[Rule]", "True"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.6605647803898835`*^9, 3.660564813075884*^9}},
+ NumberMarks->False],
+
+Cell[BoxData[
+ Graphics3DBox[{
+   CylinderBox[{{49.5575177816779, 55.4809355400133, 28.6043341677057}, {
+    49.4421733803632, 25.5362471818757, 30.4215668999395}}, 5], 
+   StyleBox[{},
+    Background->GrayLevel[0.85],
+    Boxed -> False,
+    Axes -> True], 
+   CylinderBox[{{95.4859158114101, 39.011394300099, 51.344054811125}, {
+    74.0042474144188, 29.8580595064991, 32.5091302018258}}, 5]},
+  AutomaticImageSize->True,
+  Boxed->True,
+  ImageSize->{343.2874913648447, 237.54442753955402`},
+  ViewPoint->{0.0216757063128763, -3.3114999971363908`, 0.6953401561261406},
+  ViewVertical->{-0.08891275248814223, -0.7363154144046413, 
+   1.5620288352301162`}]], "Output",
+ CellChangeTimes->{3.6605646460668836`*^9, 3.6605647814428835`*^9, 
+  3.6605648136528835`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Show", "[", 
+  RowBox[{"%10", ",", 
+   RowBox[{"Axes", "\[Rule]", "True"}]}], "]"}]], "Input",
+ NumberMarks->False],
+
+Cell[BoxData[
+ Graphics3DBox[{
+   CylinderBox[{{49.5575177816779, 55.4809355400133, 28.6043341677057}, {
+    49.4421733803632, 25.5362471818757, 30.4215668999395}}, 5], 
+   StyleBox[{},
+    Background->GrayLevel[0.85],
+    Boxed -> False,
+    Axes -> True], 
+   CylinderBox[{{95.4859158114101, 39.011394300099, 51.344054811125}, {
+    74.0042474144188, 29.8580595064991, 32.5091302018258}}, 5]},
+  Axes->True,
+  Boxed->True]], "Output",
+ CellChangeTimes->{3.6605648258438835`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Show", "[", 
+  RowBox[{"%11", ",", 
+   RowBox[{"ViewPoint", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"1.3`", ",", 
+      RowBox[{"-", "2.4`"}], ",", "2.`"}], "}"}]}]}], "]"}]], "Input",
+ NumberMarks->False],
+
+Cell[BoxData[
+ Graphics3DBox[{
+   CylinderBox[{{49.5575177816779, 55.4809355400133, 28.6043341677057}, {
+    49.4421733803632, 25.5362471818757, 30.4215668999395}}, 5], 
+   StyleBox[{},
+    Background->GrayLevel[0.85],
+    Boxed -> False,
+    Axes -> True], 
+   CylinderBox[{{95.4859158114101, 39.011394300099, 51.344054811125}, {
+    74.0042474144188, 29.8580595064991, 32.5091302018258}}, 5]},
+  Axes->True,
+  Boxed->True,
+  ViewPoint->{1.3, -2.4, 2.}]], "Output",
+ CellChangeTimes->{3.6605648287648835`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Show", "[", 
+  RowBox[{"%12", ",", 
+   RowBox[{"Background", "\[Rule]", "None"}]}], "]"}]], "Input",
+ NumberMarks->False],
+
+Cell[BoxData[
+ Graphics3DBox[{
+   CylinderBox[{{49.5575177816779, 55.4809355400133, 28.6043341677057}, {
+    49.4421733803632, 25.5362471818757, 30.4215668999395}}, 5], 
+   StyleBox[{},
+    Background->GrayLevel[0.85],
+    Boxed -> False,
+    Axes -> True], 
+   CylinderBox[{{95.4859158114101, 39.011394300099, 51.344054811125}, {
+    74.0042474144188, 29.8580595064991, 32.5091302018258}}, 5]},
+  Axes->True,
+  Background->None,
+  Boxed->True,
+  ViewPoint->{1.3, -2.4, 2.}]], "Output",
+ CellChangeTimes->{3.660564831405884*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Show", "[", 
+  RowBox[{
+   RowBox[{"Graphics3D", "[", 
+    RowBox[{
+     RowBox[{"Cylinder", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+          "95.4859158114101", ",", "39.011394300099", ",", 
+           "51.344054811125"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{
+          "74.0042474144188", ",", "29.8580595064991", ",", 
+           "32.5091302018258"}], "}"}]}], "}"}], ",", "5"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"Boxed", "\[Rule]", "False"}], ",", 
+       RowBox[{"Background", "\[Rule]", 
+        RowBox[{"GrayLevel", "[", "0.85`", "]"}]}], ",", 
+       RowBox[{"Axes", "\[Rule]", "True"}]}], "}"}]}], "]"}], ",", 
+   RowBox[{"Boxed", "\[Rule]", "True"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.6605646852678833`*^9, 3.660564696042884*^9}}],
+
+Cell[BoxData[
+ Graphics3DBox[
+  CylinderBox[{{95.4859158114101, 39.011394300099, 51.344054811125}, {
+   74.0042474144188, 29.8580595064991, 32.5091302018258}}, 5],
+  Axes->True,
+  Background->GrayLevel[0.85],
+  Boxed->True]], "Output",
+ CellChangeTimes->{3.660564696832884*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Graphics3D", "[", 
+  RowBox[{"{", 
+   RowBox[{"Blue", ",", 
+    RowBox[{"Cylinder", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+         "62.4943455321458", ",", "54.7665726475329", ",", 
+          "62.8920270613665"}], "}"}], ",", 
+        RowBox[{"{", 
+         RowBox[{
+         "35.2931597840779", ",", "45.2699895790638", ",", 
+          "54.5307829001918"}], "}"}]}], "}"}], ",", "5"}], "]"}], ",", "Red",
+     ",", 
+    RowBox[{"Cylinder", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+         "63.9041121894006", ",", "26.9272814603486", ",", 
+          "68.9307336072253"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{
+         "69.5918990079984", ",", "49.7156014272247", ",", 
+          "87.5946440815461"}], "}"}]}], "}"}], ",", " ", "5"}], "]"}], ","}],
+    "}"}], "]"}]], "Input",
+ CellChangeTimes->{{3.6605648435258837`*^9, 3.6605649058628836`*^9}, {
+  3.66056565337059*^9, 3.660565673610614*^9}}],
+
+Cell[BoxData[
+ Graphics3DBox[{
+   {RGBColor[0, 0, 1], 
+    CylinderBox[{{62.4943455321458, 54.7665726475329, 62.8920270613665}, {
+     35.2931597840779, 45.2699895790638, 54.5307829001918}}, 5]}, 
+   {RGBColor[1, 0, 0], 
+    CylinderBox[{{63.9041121894006, 26.9272814603486, 68.9307336072253}, {
+     69.5918990079984, 49.7156014272247, 87.5946440815461}}, 5]}},
+  AutomaticImageSize->True,
+  ImageSize->{424.94412334461987`, 448.70006154512646`},
+  ViewPoint->{1.706917345666603, 2.4770536055070402`, 1.5493994354287908`},
+  ViewVertical->{-0.04111515533014771, 0.19637833035525262`, 
+   0.9848748029411527}]], "Output",
+ CellChangeTimes->{
+  3.6605648443528833`*^9, {3.6605648946408834`*^9, 3.6605649063348837`*^9}, 
+   3.6605656745957127`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Show", "[", 
+  RowBox[{"%18", ",", 
+   RowBox[{"Axes", "\[Rule]", "True"}]}], "]"}]], "Input",
+ NumberMarks->False],
+
+Cell[BoxData[
+ Graphics3DBox[{
+   {RGBColor[0, 0, 1], 
+    CylinderBox[{{62.4943455321458, 54.7665726475329, 62.8920270613665}, {
+     35.2931597840779, 45.2699895790638, 54.5307829001918}}, 5]}, 
+   {RGBColor[1, 0, 0], 
+    CylinderBox[{{63.9041121894006, 26.9272814603486, 68.9307336072253}, {
+     69.5918990079984, 49.7156014272247, 87.5946440815461}}, 5]}},
+  AutomaticImageSize->True,
+  Axes->True,
+  ImageSize->{377.9618627348602, 366.97277864597874`},
+  ViewPoint->{-2.3364358100968374`, 2.3845736774821247`, 0.5521558493365143},
+  ViewVertical->{-0.3007949737785008, 0.39730440459454314`, 
+   0.891852889373037}]], "Output",
+ CellChangeTimes->{3.660565692042457*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Show", "[", 
+  RowBox[{"%16", ",", 
+   RowBox[{"Axes", "\[Rule]", "True"}], ",", 
+   RowBox[{"AxesStyle", "\[Rule]", "Black"}]}], "]"}]], "Input",
+ NumberMarks->False],
+
+Cell[BoxData[
+ Graphics3DBox[{
+   {RGBColor[0, 0, 1], 
+    CylinderBox[{{95.4859158114101, 39.011394300099, 51.344054811125}, {
+     74.0042474144188, 29.8580595064991, 32.5091302018258}}, 5]}, 
+   {RGBColor[1, 0, 0], 
+    CylinderBox[{{49.5575177816779, 55.4809355400133, 28.6043341677057}, {
+     49.4421733803632, 25.5362471818757, 30.4215668999395}}, 5]}},
+  AutomaticImageSize->True,
+  Axes->True,
+  AxesStyle->GrayLevel[0],
+  ImageSize->{359.92681645863865`, 251.49511991048143`},
+  ViewPoint->{0.061679727080873964`, -3.1959483019602315`, 
+   1.1100045326325207`},
+  ViewVertical->{-0.019096410108080077`, -0.5229701909349929, 
+   1.6478414551549974`}]], "Output",
+ CellChangeTimes->{3.6605649110588837`*^9}]
+}, Open  ]]
+},
+WindowSize->{939, 867},
+WindowMargins->{{Automatic, 22}, {47, Automatic}},
+FrontEndVersion->"9.0 for Microsoft Windows (64-bit) (November 20, 2012)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[579, 22, 556, 16, 92, "Input"],
+Cell[1138, 40, 493, 9, 321, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1668, 54, 573, 18, 52, "Input"],
+Cell[2244, 74, 235, 5, 418, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2516, 84, 682, 20, 52, "Input"],
+Cell[3201, 106, 264, 6, 418, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3502, 117, 790, 23, 52, "Input"],
+Cell[4295, 142, 280, 7, 418, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4612, 154, 1383, 39, 92, "Input"],
+Cell[5998, 195, 763, 17, 253, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[6798, 217, 139, 4, 31, "Input"],
+Cell[6940, 223, 480, 12, 333, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7457, 240, 232, 7, 31, "Input"],
+Cell[7692, 249, 510, 13, 333, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[8239, 267, 145, 4, 31, "Input"],
+Cell[8387, 273, 528, 14, 333, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[8952, 292, 880, 24, 92, "Input"],
+Cell[9835, 318, 277, 7, 406, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[10149, 330, 1053, 31, 112, "Input"],
+Cell[11205, 363, 746, 15, 464, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[11988, 383, 139, 4, 31, "Input"],
+Cell[12130, 389, 675, 14, 414, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[12842, 408, 191, 5, 31, "Input"],
+Cell[13036, 415, 715, 16, 266, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+

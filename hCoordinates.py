@@ -288,15 +288,23 @@ def invAreaCircle(radiusFiller, sideMatrix, areaRatio):
 	numberFillers = round((areaRatio * sideMatrix ** 2) / (pi * radiusFiller ** 2))
 	return numberFillers
 
+def calcNumberFibers(radiusFiber, fiberLength, sideMatrix, volumePortion):
+	import numpy
+	numFibers = round((volumePortion * sideMatrix ** 3) / (fiberLength * radiusFiber ** 2 * pi))
+	return int(numFibers)
 
-"""
-# Add methods for Carbon Nanotubes 2D & 3D
-def invAreaRectangle(lengthFiller, heightFiller, sideMatrix, areaRatio) # 2D Carbon nanotube as a rectangle
+def calcFiberPortion(n, radiusFiber, fiberLength, sideMatrix):
+	import numpy
+	return ((n * pi * radiusFiber ** 2 * fiberLength) / (sideMatrix**3))
+
+# Add methods for fibers
+def invAreaRectangle(lengthFiller, heightFiller, sideMatrix, areaRatio):
 	import numpy
 	numberFillers = round((areaRatio * sideMatrix ** 2) / (lengthFiller * heightFiller))
 	return numberFillers
 
-def getPointsRectangle(seed, side, length, width, number, orientation=45, randomO=False):
+# Random orientation
+def getPointsRectangle2D(seed, side, length, width, number):
 	import random
 	import numpy
 	random.seed(seed)
@@ -331,6 +339,313 @@ def getPointsRectangle(seed, side, length, width, number, orientation=45, random
 	
 	return xCoords, yCoords, warningMsg
 
+
+
+def get3DCylinders(seed, side, radius, height, number):
+	import random
+	import numpy
+	random.seed(seed)
+	
+	cylCoords = [Cylinder(getC(radius, height, side), getW(), radius, height)]
+	numberCoords = 1
+	
+	for i in range(1, 100000):
+		nextCylinder = Cylinder(getC(radius, height, side), getW(), radius, height)
+		flag = True
+		for j in range(0, len(cylCoords)):
+			if not SeperatedCylinders(cylCoords[j], nextCylinder):
+				flag = False
+				break
+		
+		if flag:
+			cylCoords.append(nextCylinder)
+			numberCoords += 1
+		if numberCoords == number:
+			break
+	
+	
+	warningMsg = ''
+	if numberCoords != number:
+		warningMsg = '?'
+		number = numberCoords # Needed for updated return value.
+	
+	return cylCoords, warningMsg, int(round(number))
+
+
+# c is center point of cylnder
+# unit length axis direction w which is computed randomly
+# radius r
+# height h
+# end disks are centered c +- h/2 W ...
+# u, v
+# parametrized = X(theta, t) = C + s cos theta U + s sin theta V + tW , 0 <= theta < 2pi , 0 <= s <= r , |t| < h/2
+class Cylinder:
+	def __init__(self, centerPoint, unitLengthAxisDirectionVec, radius, height):
+		self.c = centerPoint
+		self.w = unitLengthAxisDirectionVec
+		self.r = radius
+		self.h = height
+	
+	def getEnds(self):
+		return [self.c + self.w*(self.h/2.0), self.c - self.w*(self.h/2.0)]
+
+def getW():
+	import numpy
+	z = numpy.random.uniform(-1, 1, 1)[0]
+	theta = numpy.random.uniform(0, 2*pi, 1)[0]
+	return numpy.array([sqrt(1-z*z)*cos(theta), sqrt(1-z*z)*sin(theta), z])
+
+def cylindricaldegree(cylinders):
+	for i in range(0, len(cylinders)):
+		a = cylinders[i].getEnds()[0]
+		b = cylinders[i].getEnds()[1]
+		degreeAB = math.degrees(math.acos(numpy.dot(a,b)/(numpy.linalg.norm(a)*numpy.linalg.norm(b))))
+		print(degreeAB)
+
+def cylindricaldegreeother(cylinders):
+	for i in range(0, len(cylinders)):
+		a = numpy.array(cylinders[i][0][0])
+		b = numpy.array(cylinders[i][0][1])
+		degreeAB = math.degrees(math.acos(numpy.dot(a,b)/(numpy.linalg.norm(a)*numpy.linalg.norm(b))))
+		print(degreeAB)
+
+def getC(r0, h0, side):
+	import numpy
+	x0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+	y0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+	z0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+	return numpy.array([x0, y0, z0])
+
+def SeperatedCylinders(cylinder1, cylinder2):
+	import numpy
+	w1 = cylinder1.w
+	w2 = cylinder2.w
+	delta = numpy.subtract(cylinder2.c, cylinder1.c)
+	w1Xw2 = numpy.cross(w1, w2)
+	lenw1Xw2 = numpy.linalg.norm(w1Xw2)
+	rSum = cylinder1.r + cylinder2.r
+	h1Div2 = cylinder1.h / 2.0
+	h2Div2 = cylinder2.h / 2.0
+	r1 = cylinder1.r
+	r2 = cylinder2.r
+	
+	
+	if lenw1Xw2 > 0:
+		if r2*lenw1Xw2 + h1Div2 + h2Div2 * numpy.linalg.norm(numpy.dot(w1, w2)) - numpy.linalg.norm(numpy.dot(w1, delta)) < 0:
+			return True
+		if r1*lenw1Xw2 + h1Div2 * numpy.linalg.norm(numpy.dot(w1, w2)) + h2Div2  - numpy.linalg.norm(numpy.dot(w2, delta)) < 0:
+			return True
+		if rSum*lenw1Xw2 - numpy.linalg.norm(numpy.dot(w1Xw2, delta)) < 0:
+			return True
+		if SeperatedByCylinderPerpendiculars(cylinder1, cylinder2):
+			return True
+		if SeperatedByCylinderPerpendiculars(cylinder2, cylinder1):
+			return True
+		#if SeperatedByOtherDirections(cylinder1, cylinder2, delta):
+		#	return True
+	else:
+		if h1Div2 + h2Div2 - numpy.linalg.norm(w1, delta) < 0:
+			return True
+		if rSum - numpy.linalg.norm(delta - numpy.dot(w1, delta)*w1) < 0:
+			return True
+	
+	return False
+
+def F(t, r0, r1, h1, b1, c1, a2, b2):
+	import numpy
+	omt = 1 - t
+	tsqr = t * t
+	c1sqr = c1 * c1
+	omtsqr = omt * omt
+	h1b1Div2 = h1 * b1 / 2.0
+	term0 = r0 * sqrt(omtsqr + tsqr)
+	term1 = r1 * sqrt(omtsqr + c1sqr * tsqr)
+	term2 = h1b1Div2 * t
+	term3 = numpy.linalg.norm(omt * a2 + t * b2)
+	return term0 + term1 + term2 - term3
+
+def FDer(t, r0, r1, h1, b1, c1, a2, b2):
+	import numpy
+	omt = 1 - t
+	tsqr = t * t
+	c1sqr = c1 * c1
+	omtsqr = omt * omt
+	h1b1Div2 = h1 * b1 / 2.0
+	term0 = r0 * (2 * t - 1) / sqrt(omtsqr + tsqr)
+	term1 = r1 *((1 + c1sqr) * t - 1) / sqrt(omtsqr + c1sqr * tsqr)
+	term2 = h1b1Div2
+	term3 = (b2 - a2) * numpy.sign(omt * a2 + t * b2)
+	return term0 + term1 + term2 - term3
+
+def SeperatedByCylinderPerpendiculars(cylinder1, cylinder2):
+	import numpy
+	w1 = cylinder1.w
+	w2 = cylinder2.w
+	delta = numpy.subtract(cylinder2.c, cylinder1.c)
+	c1 = numpy.dot(w1, w2)
+	b1 = sqrt(1-c1*c1)
+	v0 = (w2 - c1*w1)/b1
+	u0 = numpy.cross(v0, w1)
+	a2 = numpy.dot(delta, u0)
+	b2 = numpy.dot(delta, v0)
+	r1 = cylinder1.r
+	r2 = cylinder2.r
+	h1 = cylinder1.h
+	h2 = cylinder2.h
+	
+	if F(0, r1, r2, h2, b1, c1, a2, b2) <= 0:
+		return True
+	if F(1, r1, r2, h2, b1, c1, a2, b2) <= 0:
+		return True
+	if FDer(0, r1, r2, h2, b1, c1, a2, b2) >= 0:
+		return False
+	if FDer(1, r1, r2, h2, b1, c1, a2, b2) <= 0:
+		return False
+	
+	t0 = 0
+	t1 = 1
+	maxIterations = 25 # I picked this arbitrarily
+	
+	for i in range (0, maxIterations):
+		tmid = 0.5 * (t0 + t1)
+		if F(tmid, r1, r2, h2, b1, c1, a2, b2) <= 0:
+			return True
+		fdmid = FDer(tmid, r1, r2, h2, b1, c1, a2, b2)
+		if (fdmid > 0):
+			t1 = tmid
+		elif fdmid < 0:
+			t0 = tmid
+		else:
+			break
+	
+	a2 = -1 * a2
+	if F(0, r1, r2, h2, b1, c1, a2, b2) <= 0:
+		return True
+	if F(1, r1, r2, h2, b1, c1, a2, b2) <= 0:
+		return True
+	if FDer(0, r1, r2, h2, b1, c1, a2, b2) >= 0:
+		return False
+	if FDer(1, r1, r2, h2, b1, c1, a2, b2) <= 0:
+		return False
+	
+	t0 = 0
+	t1 = 1
+	for i in range (0, maxIterations):
+		tmid = 0.5 * (t0 + t1)
+		if F(tmid, r1, r2, h2, b1, c1, a2, b2) <= 0:
+			return True
+		fdmid = FDer(tmid, r1, r2, h2, b1, c1, a2, b2)
+		if (fdmid > 0):
+			t1 = tmid
+		elif fdmid < 0:
+			t0 = tmid
+		else:
+			break
+	
+	return False
+
+def G(s, t, r0, h0, r1, h1, a0, b0, c0, a1, b1, c1, delta):
+	import numpy
+	lenDelta = numpy.norm(delta)
+	h0Div2 = h0 / 2.0
+	h1Div2 = h1 / 2.0
+	omsmt = 1 - s - t
+	ssqr = s * s
+	tsqr = t * t
+	omsmtsqr = omsmt * omsmt
+	temp = ssqr + tsqr + omsmtsqr
+	L0 = a0 * s + b0 * t + c0 * omsmt
+	L1 = a1 * s + b1 * t + c1 * omsmt
+	Q0 = temp - L0 * L0
+	Q1 = temp - L1 * L1
+	return r0 * sqrt(Q0) + r1 * sqrt(Q1) + h0Div2 * numpy.norm(L0) + h1Div2 * numpy.norm(L1) - omsmt * lenDelta
+
+def GDer(s, t, r0, h0, r1, h1, a0, b0, c0, a1, b1, c1, delta):
+	import numpy
+	lenDelta = numpy.norm(delta)
+	h0Div2 = h0 / 2.0
+	h1Div2 = h1 / 2.0
+	omsmt = 1 - s - t
+	ssqr = s * s
+	tsqr = t * t
+	omsmtsqr = omsmt * omsmt
+	temp = ssqr + tsqr + omsmtsqr
+	L0 = a0 * s + b0 * t + c0 * omsmt
+	L1 = a1 * s + b1 * t + c1 * omsmt
+	Q0 = temp - L0 * L0
+	Q1 = temp - L1 * L1
+	diffS = s - omsmt
+	diffT = t - omsmt
+	diffa0c0 = a0 - c0
+	diffa1c1 = a1 - c1
+	diffb0c0 = b0 - c0
+	diffb1c1 = b1 - c1
+	halfQ0s = diffS - diffa0c0 * L0
+	halfQ1s = diffS - diffa1c1 * L1
+	halfQ0t = diffT - diffb0c0 * L0
+	halfQ1t = diffT - diffb1c1 * L1
+	factor0 = r0 / sqrt(Q0)
+	factor1 = r1 / sqrt(Q1)
+	signL0 = numpy.sign(L0)
+	signL1 = numpy.sign(L1)
+	
+	gradient = numpy.array([0,0])
+	gradient[0] += halfQ0s * factor0
+	gradient[0] += halfQ1s * factor1
+	gradient[0] += h0Div2 * diffa0c0 * signL0
+	gradient[0] += h1Div2 * diffa1c1 * signL1
+	gradient[0] += lenDelta
+	gradient[1] += halfQ0t * factor0
+	gradient[1] += halfQ1t * factor1
+	gradient[1] += h0Div2 * diffb0c0*signL0
+	gradient[1] += h1Div2 * diffb1c1*signL1
+	gradient[1] += lenDelta
+	
+	return gradient
+
+#def SeparatedByOtherDirections(cylinder1, cylinder2, delta):
+	#if G(...) <= 0:
+	#	return True
+	
+	#return False
+
+
+
+class RandomCylinder(Cylinder):
+	def __init__(self, r0, h0, side):
+		Cylinder.__init__(self, RandomCylinder.getC(r0, h0, side), RandomCylinder.getW(), r0, h0)
+	
+	def getC(r0, h0, side):
+		import numpy
+		x0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+		y0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+		z0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+		return Point(x0, y0, z0)
+	
+	def getW():
+		import numpy
+		z = numpy.random.uniform(-1, 1, 1)[0]
+		theta = numpy.random.uniform(0, 2*pi, 1)[0]
+		return Vector(sqrt(1-z*z)*cos(theta), sqrt(1-z*z)*sin(theta), z)
+	
+	
+
+
+class Vector:
+	def __init__(self, x0, y0, z0):
+		self.x = x0
+		self.y = y0
+		self.z = z0
+
+class Point:
+	def __init__(self, x0, y0, z0):
+		self.x = x0
+		self.y = y0
+		self.z = z0
+	
+
+
+"""
 
 # Add a method that gives warning for possible combinations that aren't feasible.
 

@@ -69,7 +69,7 @@ modelRootAssembly, fullMatrixPart = create3DMatrixInclusions(modelObject, part, 
 assemblyTop, assemblyBottom, assemblyAll = define3DAssemblySets(modelRootAssembly, side)
 temp1, temp2 = 328.15, 298.15 # Assign heat temperature to be used in experiment
 heatStep3D(modelObject, assemblyBottom, assemblyTop, temp1, temp2) # apply heat BC
-limitOutputHFL(modelObject, assemblyBottom, assemblyTop) # Limit ODB Output
+#limitOutputHFL(modelObject, assemblyBottom, assemblyTop) # Limit ODB Output
 
 meshSeed = materials[matrix]['fillers'][filler]['meshSeed'] # recommended mesh
 df = materials[matrix]['fillers'][filler]['df'] # recommended deviation factor
