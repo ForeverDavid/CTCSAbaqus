@@ -68,7 +68,7 @@ def create3DMatrixFiberInclusions(modelObject, matPart, fibPart, cylinderCoords)
 		modelRootAssembly.translate(instanceList=('Fiber-'+str(aa+1), ), 
 			vector=(a[0], a[1], a[2]))
 		modelRootAssembly.rotate(angle=degreeAB, axisDirection=(b[0]-a[0], b[1]-a[1], b[2]-a[2]), 
-			axisPoint=(a[0], a[1], a[2]), instanceList=('Fiber-'+str(aa+1), ))
+			axisPoint=(0, 0, 0), instanceList=('Fiber-'+str(aa+1), ))
 	
 	# make tuple of fiber instances
 	tupleInstances = tuple([(modelRootAssembly.instances['Fiber-'+str(nn+1)])

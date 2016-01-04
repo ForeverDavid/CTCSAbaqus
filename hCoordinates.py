@@ -3,6 +3,7 @@
 	* Add comments!
 """
 from math import *
+import numpy
 
 """
 	 * Given a phr along with density, approximate radius size, and size of ESBR side
@@ -411,9 +412,9 @@ def cylindricaldegreeother(cylinders):
 
 def getC(r0, h0, side):
 	import numpy
-	x0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
-	y0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
-	z0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+	x0 = numpy.random.uniform(r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+	y0 = numpy.random.uniform(r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+	z0 = numpy.random.uniform(r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
 	return numpy.array([x0, y0, z0])
 
 def SeperatedCylinders(cylinder1, cylinder2):
@@ -603,6 +604,91 @@ def GDer(s, t, r0, h0, r1, h1, a0, b0, c0, a1, b1, c1, delta):
 	
 	return gradient
 
+# points parametrized by X(theta, t) = C + s cos theta U + s sin theta V + t W, 0 < theta < 2pi, 0 <= s <= r, |t| < h/2
+# so imagine sphere just inside within a margin, so like  h/10.0 < |t| < h/2 - h/10 and r/5.0 <= s <= 4r/5.0 
+# this is excessive but should work fairly well...
+#import numpy
+#	w1 = cylinder1.w
+#	w2 = cylinder2.w
+#	delta = numpy.subtract(cylinder2.c, cylinder1.c)
+#	w1Xw2 = numpy.cross(w1, w2)
+#	lenw1Xw2 = numpy.linalg.norm(w1Xw2)
+#	rSum = cylinder1.r + cylinder2.r
+#	h1Div2 = cylinder1.h / 2.0
+#	h2Div2 = cylinder2.h / 2.0
+#	r1 = cylinder1.r
+#	r2 = cylinder2.r
+
+def getRangeInteriorCylinderLine(cylinder1, stepSize):
+	# define the range of x,y,z
+	import numpy
+	cyl1Ends = cylinder1.getEnds()
+	if cyl1Ends[0][0] < cyl1Ends[1][0]:
+		w0 = numpy.abs(cylinder1.w[0])
+	else:
+		w0 = numpy.abs(cylinder1.w[0]) * -1
+
+	if cyl1Ends[0][1] < cyl1Ends[1][1]:
+		w1 = numpy.abs(cylinder1.w[1])
+	else:
+		w1 = numpy.abs(cylinder1.w[1]) * -1
+
+	if cyl1Ends[0][2] < cyl1Ends[1][2]:
+		w2 = numpy.abs(cylinder1.w[2])
+	else:
+		w2 = numpy.abs(cylinder1.w[2]) * -1
+
+	x_range = numpy.linspace(cyl1Ends[0][0] + cylinder1.r * w0, cyl1Ends[1][0] - cylinder1.r * w0, stepSize)
+	y_range = numpy.linspace(cyl1Ends[0][1] + cylinder1.r * w1, cyl1Ends[1][1] - cylinder1.r * w1, stepSize)
+	z_range = numpy.linspace(cyl1Ends[0][2] + cylinder1.r * w2, cyl1Ends[1][2] - cylinder1.r * w2, stepSize)
+	return x_range, y_range, z_range
+
+# could we use function pointers?
+
+# Higher step size gives higher likelihood of being correct but increases the 
+# run time considerably. n * 3 * n, 3n^2 + ... + ... at worst
+def BruteNonIntersectingCylinders(cylinder1, cylinder2, stepSize): 
+	x_range1, y_range1, z_range1 = getRangeInteriorCylinderLine(cylinder1, stepSize)
+	x_range2, y_range2, z_range2 = getRangeInteriorCylinderLine(cylinder2, stepSize*3)
+	for i in range(0, stepSize):
+		firstSphereCyl1 = numpy.array([x_range1[i], y_range1[i], z_range1[i]])
+		for j in range(0, stepSize*3):
+			sphereCyl2 = numpy.array([x_range2[j], y_range2[j], z_range2[j]])
+			dist = numpy.linalg.norm(firstSphereCyl1-sphereCyl2)
+			if dist <= cylinder1.r:
+				return False
+			
+		
+	return True
+
+def get3DCylindersBrute(seed, side, radius, height, number):
+	import random
+	import numpy
+	random.seed(seed)
+	
+	cylCoords = [Cylinder(getC(radius, height, side), getW(), radius, height)]
+	numberCoords = 1
+	
+	for i in range(1, 100000):
+		nextCylinder = Cylinder(getC(radius, height, side), getW(), radius, height)
+		for j in range(0, len(cylCoords)):
+			if not BruteNonIntersectingCylinders(cylCoords[j], nextCylinder, 7):
+				break
+		
+		cylCoords.append(nextCylinder)
+		numberCoords += 1
+		
+		if numberCoords == number:
+			break
+	
+	
+	warningMsg = ''
+	if numberCoords != number:
+		warningMsg = '?'
+		number = numberCoords # Needed for updated return value.
+	
+	return cylCoords, warningMsg, int(round(number))
+
 #def SeparatedByOtherDirections(cylinder1, cylinder2, delta):
 	#if G(...) <= 0:
 	#	return True
@@ -628,21 +714,7 @@ class RandomCylinder(Cylinder):
 		theta = numpy.random.uniform(0, 2*pi, 1)[0]
 		return Vector(sqrt(1-z*z)*cos(theta), sqrt(1-z*z)*sin(theta), z)
 	
-	
 
-
-class Vector:
-	def __init__(self, x0, y0, z0):
-		self.x = x0
-		self.y = y0
-		self.z = z0
-
-class Point:
-	def __init__(self, x0, y0, z0):
-		self.x = x0
-		self.y = y0
-		self.z = z0
-	
 
 
 """
