@@ -32,7 +32,8 @@ createSection(modelObject, part2, filler, fiberSet) # Create section for filler 
 warningPoints = ""
 
 number = calcNumberFibers(radius, length, side, portions[0])
-cylinders, warningMsg, newnum = get3DCylinders(10, side, radius, length, number)
+#cylinders, warningMsg, newnum = get3DCylinders(10, side, radius, length, number)
+cylinders, warningMsg, newnum = get3DCylindersBrute(10, side, radius, length, number)
 
 modelRootAssembly, fullMatrixPart = create3DMatrixFiberInclusions(modelObject, part, part2, cylinders) # Create assembly and return references to assembly sets
 

@@ -3,6 +3,7 @@
 	* Add comments!
 """
 from math import *
+import numpy
 
 """
 	 * Given a phr along with density, approximate radius size, and size of ESBR side
@@ -385,9 +386,13 @@ class Cylinder:
 		self.w = unitLengthAxisDirectionVec
 		self.r = radius
 		self.h = height
+		self.ends = self.getEnds()
 	
 	def getEnds(self):
 		return [self.c + self.w*(self.h/2.0), self.c - self.w*(self.h/2.0)]
+	
+	def setEnds(self, end1, end2):
+		self.ends = [end1, end2]
 
 def getW():
 	import numpy
@@ -411,9 +416,9 @@ def cylindricaldegreeother(cylinders):
 
 def getC(r0, h0, side):
 	import numpy
-	x0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
-	y0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
-	z0 = numpy.random.uniform(0 + r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+	x0 = numpy.random.uniform(r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+	y0 = numpy.random.uniform(r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
+	z0 = numpy.random.uniform(r0 + h0/2.0, side-(r0+h0/2.0), 1)[0]
 	return numpy.array([x0, y0, z0])
 
 def SeperatedCylinders(cylinder1, cylinder2):
@@ -603,12 +608,109 @@ def GDer(s, t, r0, h0, r1, h1, a0, b0, c0, a1, b1, c1, delta):
 	
 	return gradient
 
+# points parametrized by X(theta, t) = C + s cos theta U + s sin theta V + t W, 0 < theta < 2pi, 0 <= s <= r, |t| < h/2
+# so imagine sphere just inside within a margin, so like  h/10.0 < |t| < h/2 - h/10 and r/5.0 <= s <= 4r/5.0 
+# this is excessive but should work fairly well...
+#import numpy
+#	w1 = cylinder1.w
+#	w2 = cylinder2.w
+#	delta = numpy.subtract(cylinder2.c, cylinder1.c)
+#	w1Xw2 = numpy.cross(w1, w2)
+#	lenw1Xw2 = numpy.linalg.norm(w1Xw2)
+#	rSum = cylinder1.r + cylinder2.r
+#	h1Div2 = cylinder1.h / 2.0
+#	h2Div2 = cylinder2.h / 2.0
+#	r1 = cylinder1.r
+#	r2 = cylinder2.r
+
+def getRangeInteriorCylinderLine(cylinder1, stepSize):
+	# define the range of x,y,z
+	import numpy
+	cyl1Ends = cylinder1.ends
+	x_range = numpy.linspace(cyl1Ends[0][0], cyl1Ends[1][0], stepSize)
+	y_range = numpy.linspace(cyl1Ends[0][1], cyl1Ends[1][1], stepSize)
+	z_range = numpy.linspace(cyl1Ends[0][2], cyl1Ends[1][2], stepSize)
+	return x_range, y_range, z_range
+
+def BruteNonIntersectingCylinders(cylinder1, cylinder2, stepSize): 
+	x_range1, y_range1, z_range1 = getRangeInteriorCylinderLine(cylinder1, stepSize)
+	x_range2, y_range2, z_range2 = getRangeInteriorCylinderLine(cylinder2, stepSize)
+	step = len(x_range1)
+	step2 = len(x_range2)
+	for i in range(0, step):
+		firstSphereCyl1 = numpy.array([x_range1[i], y_range1[i], z_range1[i]])
+		for j in range(0, step2):
+			sphereCyl2 = numpy.array([x_range2[j], y_range2[j], z_range2[j]])
+			dist = numpy.linalg.norm(firstSphereCyl1-sphereCyl2)
+			if dist <= (cylinder1.r*2 + cylinder1.r*0.1):
+				return False
+			
+		
+	return True
+
+def get3DCylindersBrute(seed, side, radius, height, number):
+	import random
+	import numpy
+	random.seed(seed)
+	
+	cylCoords = [Cylinder(getC(radius, height, side), getW(), radius, height)]
+	numberCoords = 1
+	flag = True
+	
+	for i in range(1, 1000000):
+		nextCylinder = Cylinder(getC(radius, height, side), getW(), radius, height)
+		for j in range(0, len(cylCoords)):
+			if not (BruteNonIntersectingCylinders(cylCoords[j], nextCylinder, height / (radius/2.0)) and BruteNonIntersectingCylinders(nextCylinder, cylCoords[j], height / (radius/2.0))):
+				flag = False
+				break
+		
+		
+		if flag:
+			cylCoords.append(nextCylinder)
+			numberCoords += 1
+		
+		flag = True
+		if numberCoords == number:
+			break
+	
+	
+	warningMsg = ''
+	if numberCoords != number:
+		warningMsg = '?'
+		number = numberCoords # Needed for updated return value.
+	
+	return cylCoords, warningMsg, int(round(number))
+
 #def SeparatedByOtherDirections(cylinder1, cylinder2, delta):
 	#if G(...) <= 0:
 	#	return True
 	
 	#return False
 
+
+
+def CylindersToMathematica(cylinders):
+	s = "{"
+	for c in cylinders:
+		s+="Cylinder[{{"
+		s+=str(c.getEnds()[0][0])
+		s+=", "
+		s+=str(c.getEnds()[0][1])
+		s+=", "
+		s+=str(c.getEnds()[0][2])
+		s+="}, "
+		s+="{"
+		s+=str(c.getEnds()[1][0])
+		s+=", "
+		s+=str(c.getEnds()[1][1])
+		s+=", "
+		s+=str(c.getEnds()[1][2])
+		s+="}}, "
+		s+=str(c.r)
+		s+="], "
+	
+	nu = s[:-2] + " }"
+	return nu
 
 
 class RandomCylinder(Cylinder):
@@ -628,21 +730,33 @@ class RandomCylinder(Cylinder):
 		theta = numpy.random.uniform(0, 2*pi, 1)[0]
 		return Vector(sqrt(1-z*z)*cos(theta), sqrt(1-z*z)*sin(theta), z)
 	
+
+
+def RotationMatrix(cylinder):
+	ux = cylinder.w[0]
+	uy = cylinder.w[1]
+	uz = cylinder.w[2]
+	x1 = cylinder.getEnds()[0][0]
+	x2 = cylinder.getEnds()[0][1]
+	x3 = cylinder.getEnds()[0][2]
+	y1 = cylinder.getEnds()[1][0]
+	y2 = cylinder.getEnds()[1][1]
+	y3 = cylinder.getEnds()[1][2]
 	
-
-
-class Vector:
-	def __init__(self, x0, y0, z0):
-		self.x = x0
-		self.y = y0
-		self.z = z0
-
-class Point:
-	def __init__(self, x0, y0, z0):
-		self.x = x0
-		self.y = y0
-		self.z = z0
 	
+	i1 = x1 - x1 * ux * ux - x2 * ux * uy - x3 * ux * uz # times cos theta
+	i2 = x3 * uy - x3 * uz # times sin theta
+	i3 = y1 - x1 * ux * ux - x2 * ux * uy - x3 * ux * uz
+	
+	j1 = x2 - x1 * uy * ux - x2 * uy * uy - x3 * uy * uz # times cos theta
+	j2 = x1 * uz - x3 * ux # times sin theta
+	j3 = y2 - x1 * uy * ux - uy * uy * x2 - x3 * uy * uz
+	
+	k1 = x3 - x3 * uz * uz - x2 * uz * uy - x1 * uz * ux
+	k2 = x2 * ux - x1 * uy
+	k3 = y3 - x1 * ux * uz - x2 * uy * uz - x3 - uz * uz
+	return i1, i2, i3, j1, j2, j3, k1, k2, k3
+
 
 
 """
