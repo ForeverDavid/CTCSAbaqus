@@ -67,7 +67,7 @@ def create3DMatrixFiberInclusions(modelObject, matPart, fibPart, cylinderCoords)
 		## Does the axis direction change depending on what degreeAB is?
 		modelRootAssembly.translate(instanceList=('Fiber-'+str(aa+1), ), 
 			vector=(a[0], a[1], a[2]))
-		modelRootAssembly.rotate(angle=degreeAB, axisDirection=(b[0]-a[0], b[1]-a[1], b[2]-a[2]), 
+		modelRootAssembly.rotate(angle=degreeAB, axisDirection=(cylinderCoords[aa].w), 
 			axisPoint=(0, 0, 0), instanceList=('Fiber-'+str(aa+1), ))
 	
 	# make tuple of fiber instances

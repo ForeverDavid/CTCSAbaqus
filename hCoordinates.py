@@ -386,9 +386,13 @@ class Cylinder:
 		self.w = unitLengthAxisDirectionVec
 		self.r = radius
 		self.h = height
+		self.ends = self.getEnds()
 	
 	def getEnds(self):
 		return [self.c + self.w*(self.h/2.0), self.c - self.w*(self.h/2.0)]
+	
+	def setEnds(self, end1, end2):
+		self.ends = [end1, end2]
 
 def getW():
 	import numpy
@@ -622,40 +626,23 @@ def GDer(s, t, r0, h0, r1, h1, a0, b0, c0, a1, b1, c1, delta):
 def getRangeInteriorCylinderLine(cylinder1, stepSize):
 	# define the range of x,y,z
 	import numpy
-	cyl1Ends = cylinder1.getEnds()
-	if cyl1Ends[0][0] < cyl1Ends[1][0]:
-		w0 = numpy.abs(cylinder1.w[0])
-	else:
-		w0 = numpy.abs(cylinder1.w[0]) * -1
-
-	if cyl1Ends[0][1] < cyl1Ends[1][1]:
-		w1 = numpy.abs(cylinder1.w[1])
-	else:
-		w1 = numpy.abs(cylinder1.w[1]) * -1
-
-	if cyl1Ends[0][2] < cyl1Ends[1][2]:
-		w2 = numpy.abs(cylinder1.w[2])
-	else:
-		w2 = numpy.abs(cylinder1.w[2]) * -1
-
-	x_range = numpy.linspace(cyl1Ends[0][0] + cylinder1.r * w0, cyl1Ends[1][0] - cylinder1.r * w0, stepSize)
-	y_range = numpy.linspace(cyl1Ends[0][1] + cylinder1.r * w1, cyl1Ends[1][1] - cylinder1.r * w1, stepSize)
-	z_range = numpy.linspace(cyl1Ends[0][2] + cylinder1.r * w2, cyl1Ends[1][2] - cylinder1.r * w2, stepSize)
+	cyl1Ends = cylinder1.ends
+	x_range = numpy.linspace(cyl1Ends[0][0], cyl1Ends[1][0], stepSize)
+	y_range = numpy.linspace(cyl1Ends[0][1], cyl1Ends[1][1], stepSize)
+	z_range = numpy.linspace(cyl1Ends[0][2], cyl1Ends[1][2], stepSize)
 	return x_range, y_range, z_range
 
-# could we use function pointers?
-
-# Higher step size gives higher likelihood of being correct but increases the 
-# run time considerably. n * 3 * n, 3n^2 + ... + ... at worst
 def BruteNonIntersectingCylinders(cylinder1, cylinder2, stepSize): 
 	x_range1, y_range1, z_range1 = getRangeInteriorCylinderLine(cylinder1, stepSize)
-	x_range2, y_range2, z_range2 = getRangeInteriorCylinderLine(cylinder2, stepSize*3)
-	for i in range(0, stepSize):
+	x_range2, y_range2, z_range2 = getRangeInteriorCylinderLine(cylinder2, stepSize)
+	step = len(x_range1)
+	step2 = len(x_range2)
+	for i in range(0, step):
 		firstSphereCyl1 = numpy.array([x_range1[i], y_range1[i], z_range1[i]])
-		for j in range(0, stepSize*3):
+		for j in range(0, step2):
 			sphereCyl2 = numpy.array([x_range2[j], y_range2[j], z_range2[j]])
 			dist = numpy.linalg.norm(firstSphereCyl1-sphereCyl2)
-			if dist <= cylinder1.r:
+			if dist <= (cylinder1.r*2 + cylinder1.r*0.1):
 				return False
 			
 		
@@ -668,16 +655,21 @@ def get3DCylindersBrute(seed, side, radius, height, number):
 	
 	cylCoords = [Cylinder(getC(radius, height, side), getW(), radius, height)]
 	numberCoords = 1
+	flag = True
 	
-	for i in range(1, 100000):
+	for i in range(1, 1000000):
 		nextCylinder = Cylinder(getC(radius, height, side), getW(), radius, height)
 		for j in range(0, len(cylCoords)):
-			if not BruteNonIntersectingCylinders(cylCoords[j], nextCylinder, 7):
+			if not (BruteNonIntersectingCylinders(cylCoords[j], nextCylinder, height / (radius/2.0)) and BruteNonIntersectingCylinders(nextCylinder, cylCoords[j], height / (radius/2.0))):
+				flag = False
 				break
 		
-		cylCoords.append(nextCylinder)
-		numberCoords += 1
 		
+		if flag:
+			cylCoords.append(nextCylinder)
+			numberCoords += 1
+		
+		flag = True
 		if numberCoords == number:
 			break
 	
@@ -697,6 +689,30 @@ def get3DCylindersBrute(seed, side, radius, height, number):
 
 
 
+def CylindersToMathematica(cylinders):
+	s = "{"
+	for c in cylinders:
+		s+="Cylinder[{{"
+		s+=str(c.getEnds()[0][0])
+		s+=", "
+		s+=str(c.getEnds()[0][1])
+		s+=", "
+		s+=str(c.getEnds()[0][2])
+		s+="}, "
+		s+="{"
+		s+=str(c.getEnds()[1][0])
+		s+=", "
+		s+=str(c.getEnds()[1][1])
+		s+=", "
+		s+=str(c.getEnds()[1][2])
+		s+="}}, "
+		s+=str(c.r)
+		s+="], "
+	
+	nu = s[:-2] + " }"
+	return nu
+
+
 class RandomCylinder(Cylinder):
 	def __init__(self, r0, h0, side):
 		Cylinder.__init__(self, RandomCylinder.getC(r0, h0, side), RandomCylinder.getW(), r0, h0)
@@ -714,6 +730,32 @@ class RandomCylinder(Cylinder):
 		theta = numpy.random.uniform(0, 2*pi, 1)[0]
 		return Vector(sqrt(1-z*z)*cos(theta), sqrt(1-z*z)*sin(theta), z)
 	
+
+
+def RotationMatrix(cylinder):
+	ux = cylinder.w[0]
+	uy = cylinder.w[1]
+	uz = cylinder.w[2]
+	x1 = cylinder.getEnds()[0][0]
+	x2 = cylinder.getEnds()[0][1]
+	x3 = cylinder.getEnds()[0][2]
+	y1 = cylinder.getEnds()[1][0]
+	y2 = cylinder.getEnds()[1][1]
+	y3 = cylinder.getEnds()[1][2]
+	
+	
+	i1 = x1 - x1 * ux * ux - x2 * ux * uy - x3 * ux * uz # times cos theta
+	i2 = x3 * uy - x3 * uz # times sin theta
+	i3 = y1 - x1 * ux * ux - x2 * ux * uy - x3 * ux * uz
+	
+	j1 = x2 - x1 * uy * ux - x2 * uy * uy - x3 * uy * uz # times cos theta
+	j2 = x1 * uz - x3 * ux # times sin theta
+	j3 = y2 - x1 * uy * ux - uy * uy * x2 - x3 * uy * uz
+	
+	k1 = x3 - x3 * uz * uz - x2 * uz * uy - x1 * uz * ux
+	k2 = x2 * ux - x1 * uy
+	k3 = y3 - x1 * ux * uz - x2 * uy * uz - x3 - uz * uz
+	return i1, i2, i3, j1, j2, j3, k1, k2, k3
 
 
 
